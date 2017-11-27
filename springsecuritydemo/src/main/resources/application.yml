@@ -1,0 +1,11 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    username: root
+    password: Q1451619620a
+    url: jdbc:mysql://rm-uf6e9nw926b6h4e29o.mysql.rds.aliyuncs.com/security?characterEncoding=utf-8&useSSl=fasle
+  session:
+    store-type: none
+security:
+  basic:
+#    enabled: false
