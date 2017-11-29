@@ -25,7 +25,7 @@ public class MyUserDetailsService implements UserDetailsService {
 
         //根据查找到的用户信息判断用户是否被冻结
         return new User(username,passwordEncoder.encode("123456"),
-                true,true,true,false,
+                true,true,true,true,
                 AuthorityUtils.commaSeparatedStringToAuthorityList("admin"));
     }
 }
