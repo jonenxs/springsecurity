@@ -1,10 +1,13 @@
 package com.nxs.security.core.validate.code;
 
+import com.nxs.security.core.properties.SecurityProperties;
 import lombok.Data;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.social.connect.web.HttpSessionSessionStrategy;
 import org.springframework.social.connect.web.SessionStrategy;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.context.request.ServletWebRequest;
@@ -15,18 +18,44 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
-public class ValidateCodeFilter extends OncePerRequestFilter {
+public class ValidateCodeFilter extends OncePerRequestFilter implements InitializingBean {
 
     private AuthenticationFailureHandler authenticationFailureHandler;
 
     private SessionStrategy sessionStrategy = new HttpSessionSessionStrategy();
 
+    private Set<String> urls = new HashSet<>();
+
+    private SecurityProperties securityProperties;
+
+    private AntPathMatcher pathMatcher = new AntPathMatcher();
+
+    @Override
+    public void afterPropertiesSet() throws ServletException {
+        super.afterPropertiesSet();
+        String[] configUrls = StringUtils.splitByWholeSeparatorPreserveAllTokens(securityProperties.getCode().getImage().getUrl(), ",");
+        for (String configUrl : configUrls) {
+            urls.add(configUrl);
+        }
+        urls.add("/authentication/form");
+    }
+
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
-        if (StringUtils.equals("/authentication/form", httpServletRequest.getRequestURI())
-                && StringUtils.equalsIgnoreCase(httpServletRequest.getMethod(), "post")) {
+
+        boolean action = false;
+        for (String url : urls) {
+            if (pathMatcher.match(url, httpServletRequest.getRequestURI())) {
+                action = true;
+            }
+        }
+        if(action)
+//            (StringUtils.equals("/authentication/form", httpServletRequest.getRequestURI()) && StringUtils.equalsIgnoreCase(httpServletRequest.getMethod(), "post"))
+        {
             try {
                 validate(new ServletWebRequest(httpServletRequest));
             } catch (ValidateCodeException e) {

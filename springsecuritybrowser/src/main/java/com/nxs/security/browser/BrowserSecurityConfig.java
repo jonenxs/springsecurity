@@ -35,7 +35,8 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
 
         ValidateCodeFilter validateCodeFilter = new ValidateCodeFilter();
         validateCodeFilter.setAuthenticationFailureHandler(nxsAuthenticationFailureHandler);
-
+        validateCodeFilter.setSecurityProperties(securityProperties);
+        validateCodeFilter.afterPropertiesSet();
         http
             .addFilterBefore(validateCodeFilter, UsernamePasswordAuthenticationFilter.class)
             //      .httpBasic()//弹框登录
