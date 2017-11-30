@@ -6,23 +6,20 @@ import java.awt.image.BufferedImage;
 import java.time.LocalDateTime;
 
 @Data
-public class ImageCode {
+public class ValidateCode {
 
-    private BufferedImage image;
 
     private String code;
 
     //过期时间
     private LocalDateTime expireTime;
 
-    public ImageCode(BufferedImage image, String code, LocalDateTime expireTime) {
-        this.image = image;
+    public ValidateCode(String code, LocalDateTime expireTime) {
         this.code = code;
         this.expireTime = expireTime;
     }
 
-    public ImageCode(BufferedImage image, String code, int expireIn) {
-        this.image = image;
+    public ValidateCode(String code, int expireIn) {
         this.code = code;
         this.expireTime = LocalDateTime.now().plusSeconds(expireIn);
     }
