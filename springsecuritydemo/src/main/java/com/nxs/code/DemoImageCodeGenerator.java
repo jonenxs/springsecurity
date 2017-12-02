@@ -2,6 +2,7 @@ package com.nxs.code;
 
 import com.nxs.security.core.validate.code.image.ImageCode;
 import com.nxs.security.core.validate.code.ValidateCodeGenerator;
+import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.ServletWebRequest;
 
 //@Component("imageCodeGenerator")

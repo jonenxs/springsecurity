@@ -1,6 +1,8 @@
 package com.nxs.security.browser;
 
+import com.nxs.security.core.aunthentication.mobile.SmsCodeAuthenticationSecurityConfig;
 import com.nxs.security.core.properties.SecurityProperties;
+import com.nxs.security.core.validate.code.SmsCodeFilter;
 import com.nxs.security.core.validate.code.ValidateCodeFilter;
 import org.apache.tomcat.jdbc.pool.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +50,9 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private AuthenticationFailureHandler nxsAuthenticationFailureHandler;
 
+    @Autowired
+    private SmsCodeAuthenticationSecurityConfig smsCodeAuthenticationSecurityConfig;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
@@ -55,8 +60,13 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
         validateCodeFilter.setAuthenticationFailureHandler(nxsAuthenticationFailureHandler);
         validateCodeFilter.setSecurityProperties(securityProperties);
         validateCodeFilter.afterPropertiesSet();
+        SmsCodeFilter smsCodeFilter = new SmsCodeFilter();
+        smsCodeFilter.setAuthenticationFailureHandler(nxsAuthenticationFailureHandler);
+        smsCodeFilter.setSecurityProperties(securityProperties);
+        smsCodeFilter.afterPropertiesSet();
         http
             .addFilterBefore(validateCodeFilter, UsernamePasswordAuthenticationFilter.class)
+            .addFilterBefore(smsCodeFilter, UsernamePasswordAuthenticationFilter.class)
             //      .httpBasic()//弹框登录
             .formLogin()//表单登录
             .loginPage("/authentication/require")
@@ -77,7 +87,8 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
                     .authenticated()//需要身份认证
             .and()
                 .csrf()
-                    .disable();
+                    .disable()
+            .apply(smsCodeAuthenticationSecurityConfig);
 
     }
 }

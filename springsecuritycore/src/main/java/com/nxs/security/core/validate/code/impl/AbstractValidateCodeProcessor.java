@@ -34,7 +34,7 @@ public abstract class AbstractValidateCodeProcessor<C> implements ValidateCodePr
     protected abstract void send(ServletWebRequest request, C validateCode) throws Exception;
 
     private void save(ServletWebRequest request, C validateCode) {
-        sessionStrategy.setAttribute(request, SESSION_KEY_PERFIX + getProcessorType(request).toUpperCase(),validateCode);
+        sessionStrategy.setAttribute(request, SESSION_KEY_PREFIX + getProcessorType(request).toUpperCase(),validateCode);
     }
 
     private C generate(ServletWebRequest request) {

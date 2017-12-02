@@ -1,6 +1,8 @@
-package com.nxs.security.core.validate.code;
+package com.nxs.security.core.validate.code.sms;
 
 import com.nxs.security.core.properties.SecurityProperties;
+import com.nxs.security.core.validate.code.ValidateCode;
+import com.nxs.security.core.validate.code.ValidateCodeGenerator;
 import lombok.Data;
 import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
