@@ -1,5 +1,6 @@
 package com.nxs.security.core.validate.code;
 
+import com.nxs.security.core.properties.SecurityConstants;
 import com.nxs.security.core.validate.code.image.ImageCode;
 import com.nxs.security.core.validate.code.sms.SmsCodeSender;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,10 @@ import java.util.Map;
 public class ValidateCodeController {
 
     @Autowired
-    private Map<String, ValidateCodeProcessor> validateCodeProcessors;
+    private ValidateCodeProcessorHolder validateCodeProcessorHolder;
+
+//    @Autowired
+//    private Map<String, ValidateCodeProcessor> validateCodeProcessors;
 
 //    public static final String SESSION_KEY = "SESSION_KEY_IMAGE_CODE";
 //
@@ -60,9 +64,9 @@ public class ValidateCodeController {
      * @param type
      * @throws Exception
      */
-    @GetMapping("/code/{type}")
+    @GetMapping(SecurityConstants.DEFAULT_VALIDATE_CODE_URL_PREFIX + "/{type}")
     public void createImageCode(HttpServletRequest request, HttpServletResponse response, @PathVariable String type) throws Exception {
-        validateCodeProcessors.get(type + "CodeProcessor").create(new ServletWebRequest(request,response));
+        validateCodeProcessorHolder.findValidateCodeProcessor(type).create(new ServletWebRequest(request, response));
     }
 
 }

@@ -1,10 +1,12 @@
 package com.nxs.security.core.validate.code.image;
 
 import com.nxs.security.core.validate.code.impl.AbstractValidateCodeProcessor;
+import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.ServletWebRequest;
 
 import javax.imageio.ImageIO;
 
+@Component("imageValidateCodeProcessor")
 public class ImageCodeProcessor extends AbstractValidateCodeProcessor<ImageCode> {
 
     /**

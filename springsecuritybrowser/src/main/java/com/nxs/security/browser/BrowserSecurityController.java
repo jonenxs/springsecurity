@@ -1,6 +1,7 @@
 package com.nxs.security.browser;
 
 import com.nxs.security.browser.support.SimpleResponse;
+import com.nxs.security.core.properties.SecurityConstants;
 import com.nxs.security.core.properties.SecurityProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -36,9 +37,9 @@ public class BrowserSecurityController {
      * @param response
      * @return
      */
-    @RequestMapping("/authentication/require")
+    @RequestMapping(SecurityConstants.DEFAULT_UN_AUTHENTICATION_URL)
     @ResponseStatus(code = HttpStatus.UNAUTHORIZED)
-    public SimpleResponse requrueAuthentication(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public SimpleResponse requireAuthentication(HttpServletRequest request, HttpServletResponse response) throws IOException {
         SavedRequest savedRequest = requestCache.getRequest(request, response);
         if (savedRequest != null) {
             String targetUrl = savedRequest.getRedirectUrl();

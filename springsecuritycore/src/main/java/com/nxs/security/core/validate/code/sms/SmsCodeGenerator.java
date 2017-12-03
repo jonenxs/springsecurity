@@ -1,6 +1,8 @@
-package com.nxs.security.core.validate.code;
+package com.nxs.security.core.validate.code.sms;
 
 import com.nxs.security.core.properties.SecurityProperties;
+import com.nxs.security.core.validate.code.ValidateCode;
+import com.nxs.security.core.validate.code.ValidateCodeGenerator;
 import lombok.Data;
 import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +15,7 @@ import java.awt.image.BufferedImage;
 import java.util.Random;
 
 @Data
-@Component("smsCodeGenerator")
+@Component("smsValidateCodeGenerator")
 public class SmsCodeGenerator implements ValidateCodeGenerator {
 
     @Autowired

@@ -1,24 +1,23 @@
 package com.nxs.security.browser;
 
+import com.nxs.security.core.aunthentication.AbstractChannelSecurityConfig;
+import com.nxs.security.core.aunthentication.mobile.SmsCodeAuthenticationSecurityConfig;
+import com.nxs.security.core.properties.SecurityConstants;
 import com.nxs.security.core.properties.SecurityProperties;
-import com.nxs.security.core.validate.code.ValidateCodeFilter;
+import com.nxs.security.core.validate.code.ValidateCodeSecurityConfig;
 import org.apache.tomcat.jdbc.pool.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 
 @Configuration
-public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
+public class BrowserSecurityConfig extends AbstractChannelSecurityConfig{
 
     @Autowired
     private DataSource dataSource;
@@ -37,32 +36,23 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Autowired
+    private SmsCodeAuthenticationSecurityConfig smsCodeAuthenticationSecurityConfig;
+
+    @Autowired
+    private ValidateCodeSecurityConfig validateCodeSecurityConfig;
+
+    @Autowired
     private UserDetailsService userDetailsService;
 
     @Autowired
     private SecurityProperties securityProperties;
 
-    @Autowired
-    private AuthenticationSuccessHandler nxsAuthenticationSuccessHandler;
-
-    @Autowired
-    private AuthenticationFailureHandler nxsAuthenticationFailureHandler;
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-
-        ValidateCodeFilter validateCodeFilter = new ValidateCodeFilter();
-        validateCodeFilter.setAuthenticationFailureHandler(nxsAuthenticationFailureHandler);
-        validateCodeFilter.setSecurityProperties(securityProperties);
-        validateCodeFilter.afterPropertiesSet();
-        http
-            .addFilterBefore(validateCodeFilter, UsernamePasswordAuthenticationFilter.class)
-            //      .httpBasic()//弹框登录
-            .formLogin()//表单登录
-            .loginPage("/authentication/require")
-            .loginProcessingUrl("/authentication/form")
-            .successHandler(nxsAuthenticationSuccessHandler)
-            .failureHandler(nxsAuthenticationFailureHandler)
+        applyPasswordAuthenticationConfig(http);//表单登录
+        http.apply(validateCodeSecurityConfig)
+            .and()
+                .apply(smsCodeAuthenticationSecurityConfig)
             .and()
                 .rememberMe()//记住我
                 .tokenRepository(persistentTokenRepository())
@@ -70,14 +60,15 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
                 .userDetailsService(userDetailsService)
             .and()
                 .authorizeRequests()//对请求授权
-                    .antMatchers("/authentication/require",
+                    .antMatchers(
+                            SecurityConstants.DEFAULT_UN_AUTHENTICATION_URL,
+                            SecurityConstants.DEFAULT_LOGIN_PROCESSING_URL_MOBILE,
                             securityProperties.getBrowser().getLoginPage(),
-                            "/code/*").permitAll()
+                            SecurityConstants.DEFAULT_VALIDATE_CODE_URL_PREFIX+"/*").permitAll()
                     .anyRequest()//所有请求
                     .authenticated()//需要身份认证
             .and()
                 .csrf()
                     .disable();
-
     }
 }

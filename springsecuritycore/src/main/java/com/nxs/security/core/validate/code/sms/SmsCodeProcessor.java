@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.context.request.ServletWebRequest;
 
-@Component("smsCodeProcessor")
+@Component("smsValidateCodeProcessor")
 public class SmsCodeProcessor extends AbstractValidateCodeProcessor<ValidateCode> {
 
     @Autowired
@@ -25,4 +25,5 @@ public class SmsCodeProcessor extends AbstractValidateCodeProcessor<ValidateCode
         String mobile = ServletRequestUtils.getRequiredStringParameter(request.getRequest(), "mobile");
         smsCodeSender.send(mobile,smsCode.getCode());
     }
+
 }

@@ -6,6 +6,8 @@ spring:
     url: jdbc:mysql://rm-uf6e9nw926b6h4e29o.mysql.rds.aliyuncs.com/security?characterEncoding=utf-8&useSSl=fasle
   session:
     store-type: none
+  redis:
+    host: 192.168.6.9
 #security:
 #  basic:
 #    enabled: false
