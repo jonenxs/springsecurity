@@ -11,4 +11,8 @@ public class BrowserProperties {
 
     private int rememberMeSeconds = 3600;
 
+    private String signUpUrl = "/signUp.html";
+
+    private SessionProperties session = new SessionProperties();
+
 }

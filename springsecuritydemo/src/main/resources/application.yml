@@ -8,6 +8,7 @@ spring:
     store-type: none
   redis:
     host: 192.168.6.9
+
 #security:
 #  basic:
 #    enabled: false
@@ -18,13 +19,21 @@ nxs:
       qq:
         app-id: wxd99431bbff8305a0
         app-secret: 60f78681d063590a469f1b297feff3c4
-        providerId:
+        providerId: qq
+      weixin:
+        app-id: wxd99431bbff8305a0
+        app-secret: 60f78681d063590a469f1b297feff3c4
+        providerId: weixin
     filterProcessesUrl:
 #    code:
 #      image:
 #        length: 6
 #        width: 100
 #        url: /user,/user/*
-#    browser:
+    browser:
+      signUpUrl: /demo-signUp.html
+server:
+  session:
+    timeout: 10
 #      loginPage: /signIn.html
 #      loginType: REDIRECT
