@@ -5,9 +5,9 @@ spring:
     password: Q1451619620a
     url: jdbc:mysql://rm-uf6e9nw926b6h4e29o.mysql.rds.aliyuncs.com/security?characterEncoding=utf-8&useSSl=fasle
   session:
-    store-type: none
+    store-type: redis
   redis:
-    host: 192.168.6.9
+    host: 192.168.6.12
 
 #security:
 #  basic:
@@ -32,8 +32,10 @@ nxs:
 #        url: /user,/user/*
     browser:
       signUpUrl: /demo-signUp.html
+      signOutUrl: /demo-logout.html
 server:
   session:
     timeout: 10
+  port: 8080
 #      loginPage: /signIn.html
 #      loginType: REDIRECT

@@ -14,6 +14,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.security.web.session.InvalidSessionStrategy;
@@ -60,40 +61,50 @@ public class BrowserSecurityConfig extends AbstractChannelSecurityConfig{
     @Autowired
     private InvalidSessionStrategy invalidSessionStrategy;
 
+    @Autowired
+    private LogoutSuccessHandler logoutSuccessHandler;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         applyPasswordAuthenticationConfig(http);//表单登录
         http.apply(validateCodeSecurityConfig)
                 .and()
-                    .apply(smsCodeAuthenticationSecurityConfig)
+                .apply(smsCodeAuthenticationSecurityConfig)
                 .and()
-                    .apply(nxsSocialConfigurer)
+                .apply(nxsSocialConfigurer)
                 .and()
-                    .rememberMe()//记住我
-                        .tokenRepository(persistentTokenRepository())
-                            .tokenValiditySeconds(securityProperties.getBrowser().getRememberMeSeconds())
-                            .userDetailsService(userDetailsService)
+                .rememberMe()//记住我
+                .tokenRepository(persistentTokenRepository())
+                .tokenValiditySeconds(securityProperties.getBrowser().getRememberMeSeconds())
+                .userDetailsService(userDetailsService)
                 .and()
-                    .sessionManagement()
-                        .invalidSessionStrategy(invalidSessionStrategy)
-                        .maximumSessions(securityProperties.getBrowser().getSession().getMaximumSessions())
-                        .maxSessionsPreventsLogin(securityProperties.getBrowser().getSession().isMaxSessionsPreventsLogin())
-                        .expiredSessionStrategy(sessionInformationExpiredStrategy)
+                .sessionManagement()
+                .invalidSessionStrategy(invalidSessionStrategy)
+                .maximumSessions(securityProperties.getBrowser().getSession().getMaximumSessions())
+                .maxSessionsPreventsLogin(securityProperties.getBrowser().getSession().isMaxSessionsPreventsLogin())
+                .expiredSessionStrategy(sessionInformationExpiredStrategy)
                 .and()
                 .and()
-                    .authorizeRequests()//对请求授权
-                        .antMatchers(
-                            SecurityConstants.DEFAULT_UN_AUTHENTICATION_URL,
-                            SecurityConstants.DEFAULT_LOGIN_PROCESSING_URL_MOBILE,
-                            securityProperties.getBrowser().getLoginPage(),
-                            SecurityConstants.DEFAULT_VALIDATE_CODE_URL_PREFIX + "/*",
-                            securityProperties.getBrowser().getSignUpUrl(),
-                            securityProperties.getBrowser().getSession().getSessionInvalidUrl()+".json",
-                            securityProperties.getBrowser().getSession().getSessionInvalidUrl()+".html","user/register").permitAll()
-                        .anyRequest()//所有请求
-                        .authenticated()//需要身份认证
+                .logout()
+                .logoutUrl("signOut")
+//                            .logoutSuccessUrl("/logout.html")
+                .logoutSuccessHandler(logoutSuccessHandler)
+                .deleteCookies("JSESSIONID")
                 .and()
-                    .csrf()
-                        .disable();
+                .authorizeRequests()//对请求授权
+                .antMatchers(
+                        SecurityConstants.DEFAULT_UN_AUTHENTICATION_URL,
+                        SecurityConstants.DEFAULT_LOGIN_PROCESSING_URL_MOBILE,
+                        securityProperties.getBrowser().getLoginPage(),
+                        SecurityConstants.DEFAULT_VALIDATE_CODE_URL_PREFIX + "/*",
+                        securityProperties.getBrowser().getSignUpUrl(),
+                        securityProperties.getBrowser().getSession().getSessionInvalidUrl() + ".json",
+                        securityProperties.getBrowser().getSession().getSessionInvalidUrl() + ".html", "user/register",
+                        securityProperties.getBrowser().getSignOutUrl()).permitAll()
+                .anyRequest()//所有请求
+                .authenticated()//需要身份认证
+                .and()
+                .csrf()
+                .disable();
     }
 }
