@@ -27,10 +27,6 @@ public class BrowserSecurityConfig extends AbstractChannelSecurityConfig{
     @Autowired
     private DataSource dataSource;
 
-    @Bean
-    public PasswordEncoder passwordEncoder(){
-        return new BCryptPasswordEncoder();
-    }
 
     @Bean
     public PersistentTokenRepository persistentTokenRepository(){

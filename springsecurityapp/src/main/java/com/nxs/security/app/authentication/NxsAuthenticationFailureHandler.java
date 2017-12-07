@@ -1,9 +1,9 @@
-package com.nxs.security.browser.authentication;
+package com.nxs.security.app.authentication;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nxs.security.core.support.SimpleResponse;
 import com.nxs.security.core.properties.LoginType;
 import com.nxs.security.core.properties.SecurityProperties;
+import com.nxs.security.core.support.SimpleResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

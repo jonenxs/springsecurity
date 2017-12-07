@@ -37,5 +37,10 @@ server:
   session:
     timeout: 10
   port: 8080
+security:
+  oauth2:
+    client:
+      client-id: nxs
+      client-secret: nxs
 #      loginPage: /signIn.html
 #      loginType: REDIRECT
