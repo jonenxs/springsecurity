@@ -3,8 +3,15 @@ package com.nxs.web.controller;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.nxs.dto.User;
 import com.nxs.dto.UserQueryCondition;
+//import com.nxs.security.app.social.AppSignUpUtils;
+import com.nxs.security.core.properties.SecurityProperties;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtParser;
+import io.jsonwebtoken.Jwts;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,9 +29,11 @@ import org.springframework.web.context.request.ServletWebRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/user")
 public class UserController {
@@ -33,6 +42,12 @@ public class UserController {
     @Autowired
     private ProviderSignInUtils providerSignInUtils;
 
+//    @Autowired
+//    private AppSignUpUtils appSignUpUtils;
+
+    @Autowired
+    private SecurityProperties securityProperties;
+
     @PostMapping("/register")
     public void register(User user, HttpServletRequest request) {
         //注册用户
@@ -40,14 +55,27 @@ public class UserController {
         String userId = user.getUsername();
 
         providerSignInUtils.doPostSignUp(userId, new ServletWebRequest(request));
+
+//        appSignUpUtils.doPostSignUp(new ServletWebRequest(request),userId);
     }
 
 
+//    @GetMapping("/me")
+//    public Object getCurrentUser(@AuthenticationPrincipal UserDetails userDetails){
+////        return SecurityContextHolder.getContext().getAuthentication();
+////        return authentication;//Authentication authentication
+//        return userDetails;
+//    }
+
     @GetMapping("/me")
-    public Object getCurrentUser(@AuthenticationPrincipal UserDetails userDetails){
-//        return SecurityContextHolder.getContext().getAuthentication();
-//        return authentication;//Authentication authentication
-        return userDetails;
+    public Object getCurrentUser(Authentication authentication, HttpServletRequest request) throws UnsupportedEncodingException {
+        String header = request.getHeader("Authorization");
+        String token = StringUtils.substringAfter(header, "bearer ");
+        Claims claims = Jwts.parser().setSigningKey(securityProperties.getOauth2().getJwtSigningKey().getBytes("UTF-8"))
+                .parseClaimsJws(token).getBody();
+        String company = (String) claims.get("company");
+        log.info("【用户信息】jwt附加信息company={}",company);
+        return authentication;
     }
 
 

@@ -45,7 +45,7 @@ public class NxsAuthenticationSuccessHandler extends SavedRequestAwareAuthentica
 
         String header = httpServletRequest.getHeader("Authorization");
 
-        if (header != null && header.startsWith("Basic ")) {
+        if (header == null || (header != null && !header.startsWith("Basic"))) {
             throw new UnapprovedClientAuthenticationException("请求头中无client信息");
         }
         String[] tokens = this.extractAndDecodeHeader(header, httpServletRequest);
@@ -59,7 +59,7 @@ public class NxsAuthenticationSuccessHandler extends SavedRequestAwareAuthentica
 
         if (clientDetails == null) {
             throw new UnapprovedClientAuthenticationException("clientId对应的配置信息不存在：" + clientId);
-        } else if (StringUtils.equals(clientDetails.getClientSecret(), clientSecret)) {
+        } else if (!StringUtils.equals(clientDetails.getClientSecret(), clientSecret)) {
             throw new UnapprovedClientAuthenticationException("clientSecret不匹配：" + clientId);
         }
         TokenRequest tokenRequest = new TokenRequest(MapUtils.EMPTY_MAP, clientId, clientDetails.getScope(), "custom");

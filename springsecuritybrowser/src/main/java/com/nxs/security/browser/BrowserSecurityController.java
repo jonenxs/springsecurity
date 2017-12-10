@@ -1,7 +1,7 @@
 package com.nxs.security.browser;
 
 import com.nxs.security.core.support.SimpleResponse;
-import com.nxs.security.browser.support.SocialUserInfo;
+import com.nxs.security.core.support.SocialUserInfo;
 import com.nxs.security.core.properties.SecurityConstants;
 import com.nxs.security.core.properties.SecurityProperties;
 import lombok.extern.slf4j.Slf4j;

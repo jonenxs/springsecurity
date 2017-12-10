@@ -46,4 +46,8 @@ public interface SecurityConstants {
      */
     public static final String DEFAULT_SESSION_INVALID_URL = "/session/invalid";
 
+    public static final String DEFAULT_LOGIN_PROCESSING_URL_OPENID = "/authentication/openid";
+    public static final String DEFAULT_PARAMETER_NAME_OPENID = "openid";
+    public static final String DEFAULT_PARAMETER_NAME_PROVIDERID = "providerId";
+
 }

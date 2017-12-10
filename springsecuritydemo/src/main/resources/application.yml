@@ -2,12 +2,12 @@ spring:
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
     username: root
-    password: 123456
-    url: jdbc:mysql://202.5.31.3/security?characterEncoding=utf-8&useSSl=fasle
+    password: Q1451619620a
+    url: jdbc:mysql://rm-uf6e9nw926b6h4e29o.mysql.rds.aliyuncs.com/security?characterEncoding=utf-8&useSSl=fasle
   session:
     store-type: redis
   redis:
-    host: 202.5.31.3
+    host: 192.168.6.12
     port: 6379
 
 #security:
@@ -26,6 +26,11 @@ nxs:
         app-secret: 60f78681d063590a469f1b297feff3c4
         providerId: weixin
     filterProcessesUrl:
+    oauth2:
+      clients[0]:
+        clientId: nxs
+        clientSecret: nxs
+        accessTokenValiditySeconds: 3600
 #    code:
 #      image:
 #        length: 6
@@ -38,10 +43,11 @@ server:
   session:
     timeout: 10
   port: 8080
-security:
-  oauth2:
-    client:
-      client-id: nxs
-      client-secret: nxs
+#security:
+#  oauth2:
+#    client:
+#      client-id: nxs
+#      client-secret: nxs
 #      loginPage: /signIn.html
 #      loginType: REDIRECT
+management.security.enabled: false

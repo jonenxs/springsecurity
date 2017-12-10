@@ -1,4 +1,4 @@
-package com.nxs.security.browser.support;
+package com.nxs.security.core.support;
 
 import lombok.Data;
 

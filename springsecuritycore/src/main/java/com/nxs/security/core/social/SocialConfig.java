@@ -29,6 +29,9 @@ public class SocialConfig extends SocialConfigurerAdapter {
     @Autowired(required = false)
     private ConnectionSignUp connectionSignUp;
 
+    @Autowired(required = false)
+    private SocialAuthenticationFilterPostProcessor socialAuthenticationFilterPostProcessor;
+
 
     @Override
     public UsersConnectionRepository getUsersConnectionRepository(ConnectionFactoryLocator connectionFactoryLocator) {
@@ -45,6 +48,7 @@ public class SocialConfig extends SocialConfigurerAdapter {
         String filterProcessesUrl = securityProperties.getSocial().getFilterProcessesUrl();
         NxsSpringSocialConfig config = new NxsSpringSocialConfig(filterProcessesUrl);
         config.signupUrl(securityProperties.getBrowser().getSignUpUrl());
+        config.setSocialAuthenticationFilterPostProcessor(socialAuthenticationFilterPostProcessor);
         return config;
     }
 
